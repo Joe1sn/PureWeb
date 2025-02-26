@@ -1,0 +1,22 @@
+{
+    "Site": {
+        "title": "Joe1sn's Blog",
+        "subtitle": "",
+        "author": "Joe1sn"
+    },
+    "Directory": {
+        "source_dir": "source",
+        "public_dir": "public",
+        "tag_dir": "tags",
+        "archive_dir": "archives",
+        "category_dir": "categories"
+    },
+    "Pagination": {
+        "per_page": 20,
+        "pagination_dir": "page"
+    },
+    "Deploy": {
+        "repo": "https://github.com/Joe1sn/joe1sn.github.io.git",
+        "branch": "master"
+    }
+}
