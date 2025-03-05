@@ -180,11 +180,12 @@ namespace markdown {
         result += "<div class=\"container\">";
         result += "<header class=\"main-header\">";
         result += "<h1 class=\"main-header__title uplize\">";
-        result += "<a class=\"main-header__title__link\" href=\"/\">Joe1sn's Cabinet</a></h1>";
+        result += "<a class=\"main-header__title__link\" href=\"/" + config::config.webPath + "\">Joe1sn's Cabinet</a></h1>";
         result += "<nav class=\"main-header__nav\"><ul class=\"main-nav\"><li class=\"main-nav__list\">";
         result += "<a class=\"main-nav__list__link active\" href=\"" + config::config.webPath + "\" target=\"_self\">HOME</a>";
-        result += "</li><li class=\"main-nav__list\"><a class=\"main-nav__list__link\" href=\"" + config::config.webPath + "/archives/\"target=\"_self\">ARCHIVE</a>";
+        result += "</li><li class=\"main-nav__list\"><a class=\"main-nav__list__link\" href=\"" + config::config.webPath + "archives/\"target=\"_self\">ARCHIVE</a>";
         result += "</li><li class=\"main-nav__list\"><a class=\"main-nav__list__link\" href=\"https://github.com/Joe1sn\"target=\"_blank\">GITHUB</a></li></ul></nav></header></div>";
+        result += "<div id=\"write\" class>\n";
         result += "<div id=\"write\" class>\n";
 
 

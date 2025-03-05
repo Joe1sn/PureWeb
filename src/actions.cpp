@@ -265,10 +265,10 @@ namespace action {
         standardStart += "<div class=\"container\">";
         standardStart += "<header class=\"main-header\">";
         standardStart += "<h1 class=\"main-header__title uplize\">";
-        standardStart += "<a class=\"main-header__title__link\" href=\"/\">Joe1sn's Cabinet</a></h1>";
+        standardStart += "<a class=\"main-header__title__link\" href=\"/" + config::config.webPath + "\">Joe1sn's Cabinet</a></h1>";
         standardStart += "<nav class=\"main-header__nav\"><ul class=\"main-nav\"><li class=\"main-nav__list\">";
         standardStart += "<a class=\"main-nav__list__link active\" href=\"" + config::config.webPath + "\" target=\"_self\">HOME</a>";
-        standardStart += "</li><li class=\"main-nav__list\"><a class=\"main-nav__list__link\" href=\"" + config::config.webPath + "/archives/\"target=\"_self\">ARCHIVE</a>";
+        standardStart += "</li><li class=\"main-nav__list\"><a class=\"main-nav__list__link\" href=\"" + config::config.webPath + "archives/\"target=\"_self\">ARCHIVE</a>";
         standardStart += "</li><li class=\"main-nav__list\"><a class=\"main-nav__list__link\" href=\"https://github.com/Joe1sn\"target=\"_blank\">GITHUB</a></li></ul></nav></header></div>";
         standardStart += "<div id=\"write\" class>\n";
 
