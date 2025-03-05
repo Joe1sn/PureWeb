@@ -169,14 +169,28 @@ namespace markdown {
         result += "<meta charset=\"UTF-8\" />";
         result += this->yamlToHtml();
         result += "<link rel=\"stylesheet\" href=\"https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/default.min.css\" /><script src=\"https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js\"></script>  <script>    document.querySelectorAll('code').forEach((code) => {      if (!code.classList.length) {        code.classList.add('language-bash');      }    });  </script>	<script>		document.addEventListener('DOMContentLoaded', (event) => {			hljs.highlightAll();		});	</script>";
-        result += config::config.themeHtml;
+
+
+        result += "<link rel=\"stylesheet\" href=\"../github.css\">\n";
+        result += "<link rel=\"stylesheet\" href=\"../speciou.css\"\n";
+        // result += config::config.themeHtml;
         result += "</head>";
 
-        result += "<body class=\"typora-export os-windows\">";
-        //TODO: remove repo
-        result += "<a href=\"/TestRepo\" class=\"url\"><center><h1>" + config::config.title + "</center></h1></a>";
+        result += "<body>";
+        result += "<div class=\"container\">";
+        result += "<header class=\"main-header\">";
+        result += "<h1 class=\"main-header__title uplize\">";
+        result += "<a class=\"main-header__title__link\" href=\"/\">Joe1sn's Cabinet</a></h1>";
+        result += "<nav class=\"main-header__nav\"><ul class=\"main-nav\"><li class=\"main-nav__list\">";
+        result += "<a class=\"main-nav__list__link active\" href=\"" + config::config.webPath + "\" target=\"_self\">HOME</a>";
+        result += "</li><li class=\"main-nav__list\"><a class=\"main-nav__list__link\" href=\"" + config::config.webPath + "/archives/\"target=\"_self\">ARCHIVE</a>";
+        result += "</li><li class=\"main-nav__list\"><a class=\"main-nav__list__link\" href=\"https://github.com/Joe1sn\"target=\"_blank\">GITHUB</a></li></ul></nav></header></div>";
+        result += "<div id=\"write\" class>\n";
+
+
+        result += "<div class=\"typora-export os-windows\">";
         result += this->bodyToHtml();
-        result += "</body>";
+        result += "</div></body>";
         return result;
     }
 

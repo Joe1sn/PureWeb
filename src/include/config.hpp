@@ -37,6 +37,7 @@ namespace config {
         std::string title;
         std::string subtitle;
         std::string author;
+        std::string webPath;
 
         std::string source_dir;
         std::string public_dir;
@@ -49,8 +50,6 @@ namespace config {
 
         std::string repo;
         std::string branch;
-
-        std::string themeHtml;
 
         fs::path postDir;
         fs::path webRootDir;

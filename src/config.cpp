@@ -7,15 +7,6 @@ namespace config {
 
     configPrototype::configPrototype(std::string confPath)
     {
-        this->themeHtml = "";
-
-        std::ifstream file("./github.css");
-        std::stringstream s;
-        s << file.rdbuf();
-        themeHtml += "<style type=\"text/css\">";
-        themeHtml += s.str();
-        themeHtml += "</style>";
-        file.close();
 
         if (fs::exists(confPath)) { //如果配置文件存在
             std::ifstream configFile(confPath); //打开config文件
@@ -64,6 +55,7 @@ namespace config {
         this->title = this->jsonConfig["Site"]["title"];
         this->subtitle = this->jsonConfig["Site"]["subtitle"];
         this->author = this->jsonConfig["Site"]["author"];
+        this->webPath = this->jsonConfig["Site"]["path"];
 
         this->source_dir = this->jsonConfig["Directory"]["source_dir"];
         this->public_dir = this->jsonConfig["Directory"]["public_dir"];

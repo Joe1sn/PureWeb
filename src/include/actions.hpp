@@ -73,7 +73,7 @@ namespace action {
         bool saveCateAndTag(std::unique_ptr<markdown::markdown>& file, fs::path srcPath);
 
         //生成各种index
-        void genIndexHtml();
+        void genIndexHtml(std::string relativeLevel = "");
         // bool genArchiveIndex();
         // bool genCategoryIndex();
         // bool genTagsIndex();

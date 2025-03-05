@@ -243,7 +243,7 @@ namespace action {
     }
 
     //生成主页html
-    void website::genIndexHtml() {
+    void website::genIndexHtml(std::string relativeLevel) {
         std::string filename = "index.html";
         std::string mdFormat = "";
 
@@ -254,12 +254,22 @@ namespace action {
         standardStart += "<meta charset=\"UTF-8\" />";
         standardStart += "<title>" + config::config.title + "-" + markdown::toSafeHtmlValue(config::config.title) + "</title>";
         standardStart += "<link rel=\"stylesheet\" href=\"https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/default.min.css\" /><script src=\"https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js\"></script>  <script>    document.querySelectorAll('code').forEach((code) => {      if (!code.classList.length) {        code.classList.add('language-bash');      }    });  </script>	<script>		document.addEventListener('DOMContentLoaded', (event) => {			hljs.highlightAll();		});	</script>";
-        standardStart += config::config.themeHtml;
+
+        standardStart += "<link rel=\"stylesheet\" href=\"" + relativeLevel + "github.css\">\n";
+        standardStart += "<link rel=\"stylesheet\" href=\"" + relativeLevel + "speciou.css\"\n";
+        // standardStart += config::config.themeHtml;
         standardStart += "</head>";
 
-        standardStart += "<body class=\"typora-export os-windows\">";
-        //TODO: remove TestRepo
-        standardStart += "<a href=\"/TestRepo\" class=\"url\"><center><h1>" + config::config.title + "</center></h1></a>";
+        standardStart += "<body>";
+
+        standardStart += "<div class=\"container\">";
+        standardStart += "<header class=\"main-header\">";
+        standardStart += "<h1 class=\"main-header__title uplize\">";
+        standardStart += "<a class=\"main-header__title__link\" href=\"/\">Joe1sn's Cabinet</a></h1>";
+        standardStart += "<nav class=\"main-header__nav\"><ul class=\"main-nav\"><li class=\"main-nav__list\">";
+        standardStart += "<a class=\"main-nav__list__link active\" href=\"" + config::config.webPath + "\" target=\"_self\">HOME</a>";
+        standardStart += "</li><li class=\"main-nav__list\"><a class=\"main-nav__list__link\" href=\"" + config::config.webPath + "/archives/\"target=\"_self\">ARCHIVE</a>";
+        standardStart += "</li><li class=\"main-nav__list\"><a class=\"main-nav__list__link\" href=\"https://github.com/Joe1sn\"target=\"_blank\">GITHUB</a></li></ul></nav></header></div>";
         standardStart += "<div id=\"write\" class>\n";
 
         std::string standardEnd = "</div></body></html>\n";
@@ -276,14 +286,15 @@ namespace action {
         for (auto& mdFile : this->allMdFiles) {
             fs::path p = mdFile->path;
             // mdFile->parser();
-            //TODO:TestRepo
             std::string title = mdFile->articleTile;
             if (mdFile->articleTile.ends_with("\n"))
                 title = mdFile->articleTile.substr(0, mdFile->articleTile.length() - 1);
-            mdFormat += "# [" + title + "](\\/TestRepo\\/"\
-                + config::config.archive_dir + "\\/" + p.stem().string() + ".html" + ")\n\n";
-            // markdown::markdown tempMD(p.string());
-            // mdFile->parser();
+            title = markdown::replaceAll(title, "[", "\\[");
+            title = markdown::replaceAll(title, "]", "\\]");
+            title = markdown::replaceAll(title, "(", "\\(");
+            title = markdown::replaceAll(title, ")", "\\)");
+            mdFormat += "# [" + title + "](/" + config::config.webPath\
+                + config::config.archive_dir + "/" + markdown::replaceAll(p.stem().string(), " ", "%20") + ".html" + ")\n\n";
 
             mdFormat += mdFile->dateStr + "\n\n";
 
@@ -335,7 +346,7 @@ namespace action {
             return this->saveCateAndTag(file, srcPath);
             });
 
-        this->genIndexHtml();
+        this->genIndexHtml("/");
         return true;
     }
 
