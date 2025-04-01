@@ -1,5 +1,6 @@
 #include "include/config.hpp"
 
+
 namespace config {
     /*****
      * 配置文件类
@@ -51,23 +52,24 @@ namespace config {
     }
 
     //私有: 解析配置文件
+    //2025-4-1: fix: 配置文件可能造成xss
     void configPrototype::parserConfig() {
-        this->title = this->jsonConfig["Site"]["title"];
-        this->subtitle = this->jsonConfig["Site"]["subtitle"];
-        this->author = this->jsonConfig["Site"]["author"];
-        this->webPath = this->jsonConfig["Site"]["path"];
+        this->title = Html::toSafeHtmlValue(this->jsonConfig["Site"]["title"]);
+        this->subtitle = Html::toSafeHtmlValue(this->jsonConfig["Site"]["subtitle"]);
+        this->author = Html::toSafeHtmlValue(this->jsonConfig["Site"]["author"]);
+        this->webPath = Html::toSafeHtmlValue(this->jsonConfig["Site"]["path"]);
 
-        this->source_dir = this->jsonConfig["Directory"]["source_dir"];
-        this->public_dir = this->jsonConfig["Directory"]["public_dir"];
-        this->tag_dir = this->jsonConfig["Directory"]["tag_dir"];
-        this->archive_dir = this->jsonConfig["Directory"]["archive_dir"];
-        this->category_dir = this->jsonConfig["Directory"]["category_dir"];
+        this->source_dir = Html::toSafeHtmlValue(this->jsonConfig["Directory"]["source_dir"]);
+        this->public_dir = Html::toSafeHtmlValue(this->jsonConfig["Directory"]["public_dir"]);
+        this->tag_dir = Html::toSafeHtmlValue(this->jsonConfig["Directory"]["tag_dir"]);
+        this->archive_dir = Html::toSafeHtmlValue(this->jsonConfig["Directory"]["archive_dir"]);
+        this->category_dir = Html::toSafeHtmlValue(this->jsonConfig["Directory"]["category_dir"]);
 
         this->per_page = this->jsonConfig["Pagination"]["per_page"];
-        this->pagination_dir = this->jsonConfig["Pagination"]["pagination_dir"];
+        this->pagination_dir = Html::toSafeHtmlValue(this->jsonConfig["Pagination"]["pagination_dir"]);
 
-        this->repo = this->jsonConfig["Deploy"]["repo"];
-        this->branch = this->jsonConfig["Deploy"]["branch"];
+        this->repo = Html::toSafeHtmlValue(this->jsonConfig["Deploy"]["repo"]);
+        this->branch = Html::toSafeHtmlValue(this->jsonConfig["Deploy"]["branch"]);
 
     }
 

@@ -12,6 +12,7 @@
 #include "log.hpp"
 #include "config.hpp"
 #include "constant.hpp"
+#include "html.hpp"
 
 #include <cmark.h>
 
@@ -145,7 +146,8 @@ namespace markdown {
         std::string articleTile = "test";    //文章题目
         std::chrono::seconds date;  //文章时间-时间
         std::string dateStr;  //文章时间-字符串
-        std::string categories = config::config.category_dir;    //所属目录
+        // std::string categories = config::config.category_dir;    //所属目录
+        std::string categories = config::config.category_dir;
         std::vector<std::string> tags = {  };  //标签
         std::string body;   //真正的markdown文章
         std::string summary;    //摘要
@@ -176,12 +178,15 @@ namespace markdown {
         void printBody();
     };
 
-    std::string getValueAfter(const std::string pattern, const std::string& input, bool needClean = false);
-    std::string getValueBetween(const std::string start, const std::string end, const std::string& input);
-    std::string eraseSpace(std::string str);
-    std::chrono::seconds parseTimeString(const std::string& timeStr);
-    std::string replaceAll(const std::string str, const std::string& from, const std::string& to);
 
-    std::string toSafeHtmlValue(std::string src);  //SECURE: Avoid XSS
-    std::string warpHtmlElement(std::string value, std::string htmlElement, std::vector<std::string > htmlAtrribute = {});
+    // std::string getValueAfter(const std::string pattern, const std::string& input, bool needClean = false);//获得之后的值
+    // std::string getValueBefore(const std::string pattern, const std::string& input, bool needClean = false);//获得之前的值
+    // std::string getValueBetween(const std::string start, const std::string end, const std::string& input);//获得之间的值
+    // std::string eraseSpace(std::string str);//清楚最前面和最后面的空格
+    // std::chrono::seconds parseTimeString(const std::string& timeStr);//2024-1-1 10:00:00这样的时间字符串转为时间戳
+    // std::string replaceAll(const std::string str, const std::string& from, const std::string& to);  //替换所有
+    // std::vector<std::string> splitStr(const std::string str, const std::string pattern);//按照pattern分割str
+
+    // std::string toSafeHtmlValue(std::string src);  //SECURE: Avoid XSS
+    // std::string warpHtmlElement(std::string value, std::string htmlElement, std::vector<std::string > htmlAtrribute = {});
 }

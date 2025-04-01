@@ -16,7 +16,7 @@ namespace markdown {
     */
     //判断是否为不包裹式元素
     bool lineElement::isValid() {
-        std::string cleanedBuffer = eraseSpace(this->buffer);
+        std::string cleanedBuffer = Html::eraseSpace(this->buffer);
         if (!cleanedBuffer.starts_with(this->pattern))
             return false;
         return true;
@@ -24,7 +24,7 @@ namespace markdown {
     bool lineElement::isValid(std::string src) {
         std::string cleanedBuffer = src;
         if (!this->inParserMod) { //第一次还未进入到识别
-            cleanedBuffer = eraseSpace(this->buffer);
+            cleanedBuffer = Html::eraseSpace(this->buffer);
             this->inParserMod = true;  //表示进入到识别
         }
         if (!cleanedBuffer.starts_with(this->pattern))
@@ -36,14 +36,14 @@ namespace markdown {
     bool lineElement::parserValue() {
         if (!this->isValid())
             return false;
-        this->value = getValueAfter(this->pattern, this->buffer);
+        this->value = Html::getValueAfter(this->pattern, this->buffer);
         return true;
     }
     //从字符串获得元素值
     bool lineElement::parserValue(std::string src) {
         if (!this->isValid(src))
             return false;
-        this->value = getValueAfter(this->pattern, src);
+        this->value = Html::getValueAfter(this->pattern, src);
         return true;
     }
 
@@ -53,7 +53,7 @@ namespace markdown {
     */
     //判断是否为包裹式元素
     bool warppedElement::isValid() {
-        std::string cleanedBuffer = eraseSpace(this->buffer);
+        std::string cleanedBuffer = Html::eraseSpace(this->buffer);
         if (!cleanedBuffer.starts_with(this->pattern)   //以pattern开头和结尾
             || !cleanedBuffer.ends_with(this->pattern))
             return false;
@@ -64,7 +64,7 @@ namespace markdown {
     bool warppedElement::parserValue() {
         if (!this->isValid())
             return false;
-        this->value = getValueBetween(this->pattern, this->pattern, this->buffer);
+        this->value = Html::getValueBetween(this->pattern, this->pattern, this->buffer);
         return true;
     }
 
@@ -88,7 +88,7 @@ namespace markdown {
     std::string head::toHTML() { //将markdown标签转为html元素
         std::string result = "";
         std::string htmlElem = HTML::header + std::to_string(this->level);
-        result = warpHtmlElement(this->getValue(), htmlElem);
+        result = Html::warpHtmlElement(this->getValue(), htmlElem);
         return result;
     }
 
@@ -121,7 +121,7 @@ namespace markdown {
     std::string list::toHTML() { //将markdown标签转为html元素
         std::string result = "";
         std::string htmlElem = HTML::list;
-        result = warpHtmlElement(this->getValue(), htmlElem);
+        result = Html::warpHtmlElement(this->getValue(), htmlElem);
         return result;
     }
 
@@ -171,8 +171,8 @@ namespace markdown {
         result += "<link rel=\"stylesheet\" href=\"https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/default.min.css\" /><script src=\"https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js\"></script>  <script>    document.querySelectorAll('code').forEach((code) => {      if (!code.classList.length) {        code.classList.add('language-bash');      }    });  </script>	<script>		document.addEventListener('DOMContentLoaded', (event) => {			hljs.highlightAll();		});	</script>";
 
 
-        result += "<link rel=\"stylesheet\" href=\"../github.css\">\n";
-        result += "<link rel=\"stylesheet\" href=\"../speciou.css\"\n";
+        result += "<link rel=\"stylesheet\" href=\"/" + config::config.webPath + "github.css\">\n";
+        result += "<link rel=\"stylesheet\" href=\"/" + config::config.webPath + "speciou.css\"\n";
         // result += config::config.themeHtml;
         result += "</head>";
 
@@ -180,10 +180,10 @@ namespace markdown {
         result += "<div class=\"container\">";
         result += "<header class=\"main-header\">";
         result += "<h1 class=\"main-header__title uplize\">";
-        result += "<a class=\"main-header__title__link\" href=\"/" + config::config.webPath + "\">Joe1sn's Cabinet</a></h1>";
+        result += "<a class=\"main-header__title__link\" href=\"/" + config::config.webPath + "\">Joe1sn's Cabin</a></h1>";
         result += "<nav class=\"main-header__nav\"><ul class=\"main-nav\"><li class=\"main-nav__list\">";
-        result += "<a class=\"main-nav__list__link active\" href=\"" + config::config.webPath + "\" target=\"_self\">HOME</a>";
-        result += "</li><li class=\"main-nav__list\"><a class=\"main-nav__list__link\" href=\"" + config::config.webPath + "archives/\"target=\"_self\">ARCHIVE</a>";
+        result += "<a class=\"main-nav__list__link active\" href=\"/" + config::config.webPath + "\" target=\"_self\">HOME</a>";
+        result += "</li><li class=\"main-nav__list\"><a class=\"main-nav__list__link\" href=\"/" + config::config.webPath + "archives/\"target=\"_self\">ARCHIVE</a>";
         result += "</li><li class=\"main-nav__list\"><a class=\"main-nav__list__link\" href=\"https://github.com/Joe1sn\"target=\"_blank\">GITHUB</a></li></ul></nav></header></div>";
         result += "<div id=\"write\" class>\n";
         result += "<div id=\"write\" class>\n";
@@ -197,7 +197,7 @@ namespace markdown {
 
     //yaml头转为html
     std::string markdown::yamlToHtml() {
-        std::string result = "<title>" + config::config.title + "-" + toSafeHtmlValue(this->articleTile) + "</title>";
+        std::string result = "<title>" + config::config.title + "-" + Html::toSafeHtmlValue(this->articleTile) + "</title>";
         return result;
     }
 
@@ -226,7 +226,7 @@ namespace markdown {
             this->dateStr = "1970-01-01 00:00:00";
             try
             {
-                this->date = parseTimeString(this->dateStr);
+                this->date = Html::parseTimeString(this->dateStr);
             }
             catch (const std::exception& e)
             {
@@ -247,17 +247,17 @@ namespace markdown {
             singleLine.erase(std::remove(singleLine.begin(), singleLine.end(), '\r'), singleLine.end());
 #endif
             if (singleLine.starts_with("title:")) {  //文章标题
-                singleLine = getValueAfter("title:", singleLine, true);
+                singleLine = Html::getValueAfter("title:", singleLine, true);
                 if (!singleLine.empty())
                     this->articleTile = singleLine;
             }
             else if (singleLine.starts_with("date:")) {   //文章日期
-                singleLine = getValueAfter("date:", singleLine, true);
+                singleLine = Html::getValueAfter("date:", singleLine, true);
                 this->dateStr = singleLine;
                 //将字符串解析为时间
                 try
                 {
-                    this->date = parseTimeString(singleLine);
+                    this->date = Html::parseTimeString(singleLine);
                 }
                 catch (const std::exception& e)
                 {
@@ -281,7 +281,7 @@ namespace markdown {
                     return false;
                 }
                 case ProperType::CATE: {
-                    singleLine = getValueAfter("- ", singleLine, true);  //singleLine为目录
+                    singleLine = Html::getValueAfter("- ", singleLine, true);  //singleLine为目录
                     if (singleLine.empty()) { //
                         logger::error << "Line:" << lineNumber << ".wrong yaml head in markdown file: " << this->path << "\n";
                         return false;
@@ -293,7 +293,7 @@ namespace markdown {
                     break;
                 }
                 case ProperType::TAG: {
-                    singleLine = getValueAfter("- ", singleLine, true);  //singleLine为标签
+                    singleLine = Html::getValueAfter("- ", singleLine, true);  //singleLine为标签
                     if (singleLine.empty()) { //
                         logger::error << "Line:" << lineNumber << ".wrong yaml head in markdown file: " << this->path << "\n";
                         return false;
@@ -358,117 +358,6 @@ namespace markdown {
     }
 
 
-    ////////////////////////////
-    //字符串辅助函数
-    ////////////////////////////
-
-    //查找Pattern后的值
-    std::string getValueAfter(const std::string pattern, const std::string& input, bool needClean) {
-        std::string result = "";
-        size_t prefixPos = input.find(pattern);
-        if (prefixPos == std::string::npos) {
-            return "";// 如果找不到 pattern，返回空字符串
-        }
-        size_t titleStart = prefixPos + pattern.length(); // 计算标题的起始位置
-        result = input.substr(titleStart);
-        if (needClean)
-            return eraseSpace(result);
-        else
-            return result;
-    }
-
-    //得到start和end之间的值
-    std::string getValueBetween(const std::string start, const std::string end, const std::string& input) {
-        //1.先找到start
-        std::string result = "";
-        size_t prefixPos = input.find(start);
-        if (prefixPos == std::string::npos) {
-            return "";// 如果找不到 start，返回空字符串
-        }
-        size_t titleStart = prefixPos + start.length(); // 计算标题的起始位置
-        result = input.substr(titleStart);
-
-        //2.剔除end
-        size_t postfixPos = result.find(end);
-        if (postfixPos == std::string::npos) {
-            return "";// 如果找不到 end，返回空字符串
-        }
-        result = result.substr(0, postfixPos);
-        return result;
-    }
-
-    //删除字符串最前面和最后面的空格
-    std::string eraseSpace(std::string str) {
-        // 找到第一个非空格字符的位置
-        size_t first = str.find_first_not_of(' ');
-        if (first == std::string::npos) {
-            return ""; // 如果字符串全是空格，返回空字符串
-        }
-
-        size_t last = str.find_last_not_of(' ');// 找到最后一个非空格字符的位置
-
-        return str.substr(first, last - first + 1);// 返回去掉前后空格后的子字符串
-    }
-
-    //将时间字符串解析为 std::chrono::seconds
-    std::chrono::seconds parseTimeString(const std::string& timeStr) {
-
-        // 使用 std::tm 结构存储解析后的时间
-        std::tm tm = {};
-
-        std::istringstream ss(timeStr);
-        ss >> std::get_time(&tm, Constant::timeFormat);
-
-        if (ss.fail()) {
-            throw std::runtime_error("Failed to parse time string");
-        }
-        std::time_t time = std::mktime(&tm);
-
-        return std::chrono::seconds(time);
-    }
-
-    //替换所有字符串
-    //对 `str` 中的所有 `from` 替换为 `to`
-    std::string replaceAll(const std::string str, const std::string& from, const std::string& to) {
-        std::string result = str;
-        size_t startPos = 0;
-        while ((startPos = result.find(from, startPos)) != std::string::npos) {
-            result.replace(startPos, from.length(), to);
-            startPos += to.length(); // 避免无限循环
-        }
-        return result;
-    }
-
-
-    //HTML相关
-    //将字符串转为安全的html字符，避免xss
-    std::string toSafeHtmlValue(std::string src) {
-        src = replaceAll(src, "&", "&amp;");
-        src = replaceAll(src, "<", "&lt;");
-        src = replaceAll(src, ">", "&gt;");
-        src = replaceAll(src, "\"", "&quot;");
-        src = replaceAll(src, "'", "&apos;");
-        // src = replaceAll(src, " ", "&nbsp;");  // 空格替换为 &nbsp;，如果需要
-        // src = replaceAll(src, "\n", "<br>");  // 换行符替换为 <br> 标签
-        return src;
-    }
-
-    //使用html包裹值
-    //value: html内的值
-    //htmlElement: 裸html元素，如<p>的htmlElement就为：p
-    //htmlAtrribute: html元素的相关属性，如<a href="www.example.com">中的 href="www.example.com"
-    std::string warpHtmlElement(std::string value, std::string htmlElement, std::vector<std::string > htmlAtrribute) {
-        //1.合成html元素
-        std::string startElem = "<" + htmlElement;
-        for (auto config : htmlAtrribute)
-            startElem += " " + config;
-        startElem += ">";
-        std::string endElem = "</" + htmlElement + ">";
-
-        //2.清洗value并合成结果
-        value = toSafeHtmlValue(value);
-        return startElem + value + endElem;
-    }
 
 
 }

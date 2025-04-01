@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.5)
 project(PureWeb LANGUAGES CXX)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
-set(CMAKE_PREFIX_PATH "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.39.33519/bin/Hostx64/x64")
+set(CMAKE_PREFIX_PATH "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.43.34808/bin/Hostx64/x64")
 
 # set(CMAKE_AUTOUIC ON)
 # set(CMAKE_AUTOMOC ON)
@@ -33,6 +33,7 @@ set(PUREWEB_INCLUDE
     src/include/page.hpp
     src/include/markdown.hpp
     src/include/gitcmd.hpp
+    src/include/html.hpp
 )
 
 set(PUREWEB_SOURCE
@@ -42,6 +43,7 @@ set(PUREWEB_SOURCE
     src/actions.cpp
     src/page.cpp
     src/markdown.cpp
+    src/html.cpp
 )
 
 # WINDOWS 平台编译

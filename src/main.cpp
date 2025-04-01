@@ -28,10 +28,10 @@ int main(int argc, char* argv[]) {
 
     std::string temp = "";
     auto website = action::website();
-    if (argc == 1) {
-        website.renderMarkdowns();
-        return 0;
-    }
+    // if (argc == 1) {
+    //     website.renderMarkdowns();
+    //     return 0;
+    // }
 
     for (size_t i = 1; i < argc; i++)
     {
@@ -42,7 +42,12 @@ int main(int argc, char* argv[]) {
             website.renderMarkdowns();
     }
 
-
+    // std::string temp = "test/1/2/3/4";
+    // for (auto s : Html::splitStr(temp, "/"))
+    // {
+    //     logger::debug << s << "<";
+    // }
+    // FileAction::recursiveCreateDir("test/1/2");
     return 0;
 }
 

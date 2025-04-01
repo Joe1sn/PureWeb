@@ -12,6 +12,7 @@
 
 #include "constant.hpp"
 #include "log.hpp"
+#include "html.hpp"
 
 #include <iostream>
 #include <fstream>

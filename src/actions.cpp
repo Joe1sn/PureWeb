@@ -4,11 +4,14 @@ namespace FileAction {
     *  文件操作类
     *****************************/
     //创建子文件夹
-    bool createSubDir(std::string subdir) {
+    bool createSubDir(std::string subdir, bool debug) {
         fs::path dir = subdir;
         if (!fs::exists(dir)) { //该文件夹不存在
-            if (fs::create_directory(fs::absolute(dir)))
-                logger::success << "Directory:" << fs::absolute(dir) << " created successfully\n";
+            if (fs::create_directory(fs::absolute(dir))) {
+                if (debug)
+                    logger::success << "Directory:" << fs::absolute(dir) << " created successfully\n";
+            }
+
             else {
                 logger::error << "Failed to create directory: " << fs::absolute(dir) << "\n";
                 return false;
@@ -19,6 +22,20 @@ namespace FileAction {
             // logger::warn << "Directory:" << fs::absolute(dir) << " already exists.\n";
             return true;
         }
+    }
+
+    //递归式创建文件夹
+    bool recursiveCreateDir(std::string recur_dir, std::string pagin_str) {
+        fs::path path = "";
+        for (const auto str : Html::splitStr(recur_dir, pagin_str))
+        {
+            path = path / str;
+            if (!createSubDir(path.string())) { //及时退出避免死循环
+                logger::error << "can't create sub directoty: " << str << "\n";
+                break;
+            }
+        }
+        return true;
     }
 
     //遍历目录下所有文件
@@ -156,13 +173,6 @@ namespace action {
 
         std::vector<fs::path> result = {};
         size_t pageIndex = 0;
-        // std::vector<std::unique_ptr<markdown::markdown>> files = this->allMdFiles;
-        //按照时间排序，约新越靠前
-        // std::sort(this->allMdFiles.begin(), this->allMdFiles.end(),
-        //     [](std::unique_ptr<markdown::markdown>& a, std::unique_ptr<markdown::markdown>& b) {
-        //         return a->date > b->date;
-        //     }
-        // );
         fs::path tempPath;
         std::ofstream fileObj;
         std::string tempStr;
@@ -174,12 +184,12 @@ namespace action {
             file->parser();
             tempStr = file->toHtml();
 
-            //TODO: archive by some limit
-            // tempPath = this->archiveDir / std::to_string(size_t(pageIndex / config::config.per_page) + 1) / filename;
-            tempPath = this->archiveDir / filename;
+            //TODO: archive by archive/{year}/{mouth}/{day}
+            tempPath = this->archiveDir / Html::formatTimestamp(file->date);
+            tempPath = tempPath / filename;
 
             if (!fs::exists(tempPath)) {
-                FileAction::createSubDir(tempPath.parent_path().string());
+                FileAction::recursiveCreateDir(tempPath.parent_path().string());
             }
             fileObj = std::ofstream(tempPath);
             fileObj.write(tempStr.c_str(), tempStr.length());
@@ -243,7 +253,7 @@ namespace action {
     }
 
     //生成主页html
-    void website::genIndexHtml(std::string relativeLevel) {
+    void website::genIndexHtml() {
         std::string filename = "index.html";
         std::string mdFormat = "";
 
@@ -252,11 +262,11 @@ namespace action {
         std::string standardStart = "<!DOCTYPE html>\n<html>";
         standardStart += "<head>\n";
         standardStart += "<meta charset=\"UTF-8\" />";
-        standardStart += "<title>" + config::config.title + "-" + markdown::toSafeHtmlValue(config::config.title) + "</title>";
+        standardStart += "<title>" + config::config.title + "-" + Html::toSafeHtmlValue(config::config.title) + "</title>";
         standardStart += "<link rel=\"stylesheet\" href=\"https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/default.min.css\" /><script src=\"https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js\"></script>  <script>    document.querySelectorAll('code').forEach((code) => {      if (!code.classList.length) {        code.classList.add('language-bash');      }    });  </script>	<script>		document.addEventListener('DOMContentLoaded', (event) => {			hljs.highlightAll();		});	</script>";
 
-        standardStart += "<link rel=\"stylesheet\" href=\"" + relativeLevel + "github.css\">\n";
-        standardStart += "<link rel=\"stylesheet\" href=\"" + relativeLevel + "speciou.css\"\n";
+        standardStart += "<link rel=\"stylesheet\" href=\"/" + config::config.webPath + "github.css\">\n";
+        standardStart += "<link rel=\"stylesheet\" href=\"/" + config::config.webPath + "speciou.css\"\n";
         // standardStart += config::config.themeHtml;
         standardStart += "</head>";
 
@@ -265,10 +275,10 @@ namespace action {
         standardStart += "<div class=\"container\">";
         standardStart += "<header class=\"main-header\">";
         standardStart += "<h1 class=\"main-header__title uplize\">";
-        standardStart += "<a class=\"main-header__title__link\" href=\"/" + config::config.webPath + "\">Joe1sn's Cabinet</a></h1>";
+        standardStart += "<a class=\"main-header__title__link\" href=\"/" + config::config.webPath + "\">Joe1sn's Cabin</a></h1>";
         standardStart += "<nav class=\"main-header__nav\"><ul class=\"main-nav\"><li class=\"main-nav__list\">";
-        standardStart += "<a class=\"main-nav__list__link active\" href=\"" + config::config.webPath + "\" target=\"_self\">HOME</a>";
-        standardStart += "</li><li class=\"main-nav__list\"><a class=\"main-nav__list__link\" href=\"" + config::config.webPath + "archives/\"target=\"_self\">ARCHIVE</a>";
+        standardStart += "<a class=\"main-nav__list__link active\" href=\"/" + config::config.webPath + "\" target=\"_self\">HOME</a>";
+        standardStart += "</li><li class=\"main-nav__list\"><a class=\"main-nav__list__link\" href=\"/" + config::config.webPath + "archives/\"target=\"_self\">ARCHIVE</a>";
         standardStart += "</li><li class=\"main-nav__list\"><a class=\"main-nav__list__link\" href=\"https://github.com/Joe1sn\"target=\"_blank\">GITHUB</a></li></ul></nav></header></div>";
         standardStart += "<div id=\"write\" class>\n";
 
@@ -283,25 +293,36 @@ namespace action {
                 return a->date > b->date;
             }
         );
+        size_t counter = 0;
+        size_t totalPage = size_t((this->allMdFiles.size() + config::config.per_page - 1) / config::config.per_page);
+        fs::path archivePath = this->archiveDir / config::config.pagination_dir;
+        FileAction::recursiveCreateDir(fs::relative(archivePath).string(), "\\");
+
         for (auto& mdFile : this->allMdFiles) {
+            counter++;
+            //开始生成每个page的html
+
+            //1.生成markdown原始排版
             fs::path p = mdFile->path;
-            // mdFile->parser();
             std::string title = mdFile->articleTile;
             if (mdFile->articleTile.ends_with("\n"))
                 title = mdFile->articleTile.substr(0, mdFile->articleTile.length() - 1);
-            title = markdown::replaceAll(title, "[", "\\[");
-            title = markdown::replaceAll(title, "]", "\\]");
-            title = markdown::replaceAll(title, "(", "\\(");
-            title = markdown::replaceAll(title, ")", "\\)");
-            mdFormat += "# [" + title + "](/" + config::config.webPath\
-                + config::config.archive_dir + "/" + markdown::replaceAll(p.stem().string(), " ", "%20") + ".html" + ")\n\n";
+            //1.1 合成标题
+            title = Html::replaceAll(title, "[", "\\[");
+            title = Html::replaceAll(title, "]", "\\]");
+            title = Html::replaceAll(title, "(", "\\(");
+            title = Html::replaceAll(title, ")", "\\)");
+
+            mdFormat += "# [" + title + "](/" + config::config.webPath \
+                + config::config.archive_dir + "/" + Html::formatTimestamp(mdFile->date) + \
+                "/" + Html::urlEncode(p.stem().string()) + ".html" + ")\n\n";
 
             mdFormat += mdFile->dateStr + "\n\n";
 
+            //1.2 合成简介
             std::vector<std::string> lines;
             std::istringstream stream(mdFile->summary);
             std::string line;
-
             while (std::getline(stream, line)) {
                 lines.push_back(line);
             }
@@ -314,22 +335,38 @@ namespace action {
                     mdFormat += "> " + str + "\n";
             }
             mdFormat += "\n\n";
+
+            if (counter % config::config.per_page == 0
+                || (counter == allMdFiles.size())) {//保存该html
+                //2.1渲染markdown并合成
+                size_t currentPage = size_t((counter + config::config.per_page - 1) / config::config.per_page);
+                indexPage += cmark_markdown_to_html(mdFormat.c_str(), mdFormat.length(), CMARK_OPT_UNSAFE);
+                if (currentPage == 1 && totalPage > 1)//第一页翻页下标
+                    indexPage += "<div class=\"pagination\"><a class=\"pagination__link pagination__next\" href=\"" + config::config.webPath + "/" + config::config.archive_dir + "/page/2.html\">next</a></div>";
+                else if (currentPage != totalPage && totalPage > 1)//中间页
+                    indexPage += "<div class=\"pagination\"><a class=\"pagination__link pagination__prev\" href=\"" + config::config.webPath + "/" + config::config.archive_dir + "/page/" + std::to_string(currentPage - 1) + ".html" \
+                    + "\">prev</a><a class=\"pagination__link pagination__next\" href=\"" + config::config.webPath + "/" + config::config.archive_dir + "/page/" + std::to_string(currentPage + 1) + ".html\">next</a></div>";
+                else if (totalPage != 1 && currentPage == totalPage) { //尾页
+                    indexPage += "<div class=\"pagination\"><a class=\"pagination__link pagination__prev\" href=\"" + config::config.webPath + "/" + config::config.archive_dir + "/page/" + std::to_string(currentPage - 2) + ".html" \
+                        + "\">prev</a></div>";
+                }
+
+                indexPage += standardEnd;
+                //2.2创建页的路径
+                std::ofstream outfile(archivePath / (std::to_string(size_t(counter / config::config.per_page)) + ".html"));
+                outfile.write(indexPage.c_str(), indexPage.length());
+                outfile.close();
+
+                if (currentPage == 1 && totalPage > 1) {
+                    std::ofstream outfile2(config::config.webRootDir / "index.html");
+                    outfile2.write(indexPage.c_str(), indexPage.length());
+                    outfile2.close();
+                }
+                indexPage = standardStart;
+                mdFormat = "";
+            }
         }
-
-        indexPage += cmark_markdown_to_html(mdFormat.c_str(), mdFormat.length(), CMARK_OPT_UNSAFE);
-        indexPage += standardEnd;
-
-        std::ofstream outfile((this->archiveDir / filename));
-        std::ofstream outfile2((config::config.webRootDir / filename));
-        outfile.write(indexPage.c_str(), indexPage.length());
-        outfile2.write(indexPage.c_str(), indexPage.length());
-        outfile.close();
-        outfile2.close();
         logger::success << "[Archive Index]create successful\n";
-
-        //
-        // indexPage.clear();
-
 
     }
 
@@ -346,7 +383,7 @@ namespace action {
             return this->saveCateAndTag(file, srcPath);
             });
 
-        this->genIndexHtml("/");
+        this->genIndexHtml();
         return true;
     }
 

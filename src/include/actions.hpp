@@ -15,6 +15,7 @@
 #include "config.hpp"
 #include "markdown.hpp"
 #include "gitcmd.hpp"
+#include "html.hpp"
 
 
 #include <filesystem>
@@ -28,8 +29,9 @@ namespace fs = std::filesystem;
  *  文件操作
  *****************************/
 namespace FileAction {
-    bool createSubDir(std::string subdir);
+    bool createSubDir(std::string subdir, bool debug = false);
 
+    bool recursiveCreateDir(std::string recur_dir, std::string pagin_str = "/");
 
     std::vector<fs::path> getFiles(std::string dir,
         std::function<bool(fs::path)> checker = [](fs::path p) {
@@ -73,7 +75,7 @@ namespace action {
         bool saveCateAndTag(std::unique_ptr<markdown::markdown>& file, fs::path srcPath);
 
         //生成各种index
-        void genIndexHtml(std::string relativeLevel = "");
+        void genIndexHtml();
         // bool genArchiveIndex();
         // bool genCategoryIndex();
         // bool genTagsIndex();
