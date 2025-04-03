@@ -214,7 +214,7 @@ namespace action {
                 FileAction::createSubDir(fs::absolute(dstPath.parent_path()).string());
             fs::copy_file(srcPath, dstPath);
         }
-        catch (const std::exception& e)
+        catch (...)
         {
             // std::cerr << e.what() << '\n';
         }
@@ -237,7 +237,7 @@ namespace action {
                 fs::copy_file(srcPath, tempPath);
             }
         }
-        catch (const std::exception& e)
+        catch (...)
         {
             // std::cerr << e.what() << '\n';
         }
@@ -262,11 +262,12 @@ namespace action {
         std::string standardStart = "<!DOCTYPE html>\n<html>";
         standardStart += "<head>\n";
         standardStart += "<meta charset=\"UTF-8\" />";
-        standardStart += "<title>" + config::config.title + "-" + Html::toSafeHtmlValue(config::config.title) + "</title>";
+        // standardStart += "<title>" + config::config.title + "-" + Html::toSafeHtmlValue(config::config.title) + "</title>";
+        standardStart += "<title>" + config::config.title + "</title>";
         standardStart += "<link rel=\"stylesheet\" href=\"https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/default.min.css\" /><script src=\"https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js\"></script>  <script>    document.querySelectorAll('code').forEach((code) => {      if (!code.classList.length) {        code.classList.add('language-bash');      }    });  </script>	<script>		document.addEventListener('DOMContentLoaded', (event) => {			hljs.highlightAll();		});	</script>";
 
-        standardStart += "<link rel=\"stylesheet\" href=\"/" + config::config.webPath + "github.css\">\n";
-        standardStart += "<link rel=\"stylesheet\" href=\"/" + config::config.webPath + "speciou.css\"\n";
+        standardStart += "<link rel=\"stylesheet\" href=\"/" + config::config.webPath + "/github.css\">\n";
+        standardStart += "<link rel=\"stylesheet\" href=\"/" + config::config.webPath + "/speciou.css\"\n";
         // standardStart += config::config.themeHtml;
         standardStart += "</head>";
 
@@ -275,7 +276,7 @@ namespace action {
         standardStart += "<div class=\"container\">";
         standardStart += "<header class=\"main-header\">";
         standardStart += "<h1 class=\"main-header__title uplize\">";
-        standardStart += "<a class=\"main-header__title__link\" href=\"/" + config::config.webPath + "\">Joe1sn's Cabin</a></h1>";
+        standardStart += "<a class=\"main-header__title__link\" href=\"/" + config::config.webPath + "\">" + config::config.title + "</a></h1>";
         standardStart += "<nav class=\"main-header__nav\"><ul class=\"main-nav\"><li class=\"main-nav__list\">";
         standardStart += "<a class=\"main-nav__list__link active\" href=\"/" + config::config.webPath + "\" target=\"_self\">HOME</a>";
         standardStart += "</li><li class=\"main-nav__list\"><a class=\"main-nav__list__link\" href=\"/" + config::config.webPath + "archives/\"target=\"_self\">ARCHIVE</a>";
@@ -314,7 +315,7 @@ namespace action {
             title = Html::replaceAll(title, ")", "\\)");
 
             mdFormat += "# [" + title + "](/" + config::config.webPath \
-                + config::config.archive_dir + "/" + Html::formatTimestamp(mdFile->date) + \
+                + "/" + config::config.archive_dir + "/" + Html::formatTimestamp(mdFile->date) + \
                 "/" + Html::urlEncode(p.stem().string()) + ".html" + ")\n\n";
 
             mdFormat += mdFile->dateStr + "\n\n";
@@ -342,12 +343,12 @@ namespace action {
                 size_t currentPage = size_t((counter + config::config.per_page - 1) / config::config.per_page);
                 indexPage += cmark_markdown_to_html(mdFormat.c_str(), mdFormat.length(), CMARK_OPT_UNSAFE);
                 if (currentPage == 1 && totalPage > 1)//第一页翻页下标
-                    indexPage += "<div class=\"pagination\"><a class=\"pagination__link pagination__next\" href=\"" + config::config.webPath + "/" + config::config.archive_dir + "/page/2.html\">next</a></div>";
+                    indexPage += "<div class=\"pagination\"><a class=\"pagination__link pagination__next\" href=\"/" + config::config.webPath + "/" + config::config.archive_dir + "/page/2.html\">next</a></div>";
                 else if (currentPage != totalPage && totalPage > 1)//中间页
-                    indexPage += "<div class=\"pagination\"><a class=\"pagination__link pagination__prev\" href=\"" + config::config.webPath + "/" + config::config.archive_dir + "/page/" + std::to_string(currentPage - 1) + ".html" \
-                    + "\">prev</a><a class=\"pagination__link pagination__next\" href=\"" + config::config.webPath + "/" + config::config.archive_dir + "/page/" + std::to_string(currentPage + 1) + ".html\">next</a></div>";
+                    indexPage += "<div class=\"pagination\"><a class=\"pagination__link pagination__prev\" href=\"/" + config::config.webPath + "/" + config::config.archive_dir + "/page/" + std::to_string(currentPage - 1) + ".html" \
+                    + "\">prev</a><a class=\"pagination__link pagination__next\" href=\"/" + config::config.webPath + "/" + config::config.archive_dir + "/page/" + std::to_string(currentPage + 1) + ".html\">next</a></div>";
                 else if (totalPage != 1 && currentPage == totalPage) { //尾页
-                    indexPage += "<div class=\"pagination\"><a class=\"pagination__link pagination__prev\" href=\"" + config::config.webPath + "/" + config::config.archive_dir + "/page/" + std::to_string(currentPage - 2) + ".html" \
+                    indexPage += "<div class=\"pagination\"><a class=\"pagination__link pagination__prev\" href=\"/" + config::config.webPath + "/" + config::config.archive_dir + "/page/" + std::to_string(currentPage - 2) + ".html" \
                         + "\">prev</a></div>";
                 }
 

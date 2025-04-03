@@ -39,4 +39,25 @@ namespace gitcmd
         system(pullcmd.c_str());
 
     }
+
+    inline void updateRepo() {
+        std::string cmd = "git -C ";
+        cmd += Constant::defaultWebDir;
+
+        std::string pullcmd = cmd + " add .";
+        logger::warn << "excute: " << pullcmd << "\n";
+        system(pullcmd.c_str());
+
+        pullcmd = cmd + " commit -m \"update commit\"";
+        logger::warn << "excute: " << pullcmd << "\n";
+        system(pullcmd.c_str());
+
+        pullcmd = cmd + " branch -m master main";
+        logger::warn << "excute: " << pullcmd << "\n";
+        system(pullcmd.c_str());
+
+        pullcmd = cmd + " push origin " + config::config.branch + " --force";
+        logger::warn << "excute: " << pullcmd << "\n";
+        system(pullcmd.c_str());
+    }
 } // namespace gitcmd

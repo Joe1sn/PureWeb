@@ -71,3 +71,4 @@ PureWeb 是一个类似hexo、hugo的，简单的、微型的静态博客网站�
 - [x] index分页
 - [ ] 非法字符url编码【Half】
 - [ ] git相关操作： init初始化时删除原有的 .git
+- [x] git相关操作： 网页更新相关

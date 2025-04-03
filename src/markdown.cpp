@@ -164,23 +164,22 @@ namespace markdown {
 
     //
     std::string markdown::toHtml() {
-        std::string result = "<!DOCTYPE html>\n";
+        std::string result = "<!DOCTYPE html>\n<html>";
         result += "<head>\n";
         result += "<meta charset=\"UTF-8\" />";
         result += this->yamlToHtml();
         result += "<link rel=\"stylesheet\" href=\"https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/default.min.css\" /><script src=\"https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js\"></script>  <script>    document.querySelectorAll('code').forEach((code) => {      if (!code.classList.length) {        code.classList.add('language-bash');      }    });  </script>	<script>		document.addEventListener('DOMContentLoaded', (event) => {			hljs.highlightAll();		});	</script>";
 
 
-        result += "<link rel=\"stylesheet\" href=\"/" + config::config.webPath + "github.css\">\n";
-        result += "<link rel=\"stylesheet\" href=\"/" + config::config.webPath + "speciou.css\"\n";
-        // result += config::config.themeHtml;
+        result += "<link rel=\"stylesheet\" href=\"/" + config::config.webPath + "/github.css\">\n";
+        result += "<link rel=\"stylesheet\" href=\"/" + config::config.webPath + "/speciou.css\"\n";
         result += "</head>";
 
         result += "<body>";
         result += "<div class=\"container\">";
         result += "<header class=\"main-header\">";
         result += "<h1 class=\"main-header__title uplize\">";
-        result += "<a class=\"main-header__title__link\" href=\"/" + config::config.webPath + "\">Joe1sn's Cabin</a></h1>";
+        result += "<a class=\"main-header__title__link\" href=\"/" + config::config.webPath + "\">" + config::config.title + "</a></h1>";
         result += "<nav class=\"main-header__nav\"><ul class=\"main-nav\"><li class=\"main-nav__list\">";
         result += "<a class=\"main-nav__list__link active\" href=\"/" + config::config.webPath + "\" target=\"_self\">HOME</a>";
         result += "</li><li class=\"main-nav__list\"><a class=\"main-nav__list__link\" href=\"/" + config::config.webPath + "archives/\"target=\"_self\">ARCHIVE</a>";
