@@ -230,7 +230,7 @@ namespace action {
 
                 //2.合成翻页
                 bodyContent += this->paginHtml(1, pageIndex, size_t((this->allMdFiles.size()) / config::config.per_page),
-                    "/" + fs::relative(fs::path(this->archiveDir / config::config.pagination_dir), config::config.webRootDir).generic_string(), "/" + fs::relative(this->archiveDir, config::config.webRootDir).generic_string());
+                    config::config.webPath + fs::relative(fs::path(this->archiveDir / config::config.pagination_dir), config::config.webRootDir).generic_string(), config::config.webPath + fs::relative(this->archiveDir, config::config.webRootDir).generic_string());
 
                 //3.在文件夹下创建index.html
                 // logger::debug << "/" + fs::relative(pagePath.parent_path(), config::config.webRootDir).generic_string() << "\n";
@@ -323,8 +323,8 @@ namespace action {
 
                 // 2.合成翻页
                 htmlFormat += this->paginHtml(1, currentIndex, totalPage, \
-                    "/" + config::config.pagination_dir + "//",
-                    "/"
+                    config::config.webPath + config::config.pagination_dir + "//",
+                    config::config.webPath
                 );
 
                 indexPage.bodySetter(htmlFormat);
