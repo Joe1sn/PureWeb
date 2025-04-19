@@ -12,7 +12,8 @@
 
 #include "constant.hpp"
 #include "log.hpp"
-#include "html.hpp"
+#include "robust_str.hpp"
+
 
 #include <iostream>
 #include <fstream>

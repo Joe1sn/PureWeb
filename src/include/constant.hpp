@@ -16,7 +16,7 @@ namespace Constant {
     inline constexpr const char* defaultConfig = "{\"Site\": {\"title\": \"PureWeb Blog\", \"subtitle\": \"\", \"author\": \"Joe1sn\", \"path\":\"TestRepo\"}, \"Directory\": {\"source_dir\": \"source\", \"public_dir\": \"public\", \"tag_dir\": \"tags\", \"archive_dir\": \"archives\", \"category_dir\": \"categories\"}, \"Pagination\": {\"per_page\": 20, \"pagination_dir\": \"page\"}, \"Deploy\": {\"repo\": \"https://github.com/Joe1sn/TestRepo\", \"branch\": \"main\"}}";
     inline constexpr const char* defaultWebDir = "./website";
     inline constexpr const char* defaultPostDir = "./posts";
-    inline constexpr const char* defaultThemeDir = "./theme";
+    inline constexpr const char* defaultThemeDir = "./style";
 
     inline constexpr const char* defaultThemeName = "github";
     inline constexpr const char* timeFormat = "%Y-%m-%d %H:%M:%S";

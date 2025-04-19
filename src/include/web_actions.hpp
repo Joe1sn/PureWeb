@@ -15,6 +15,8 @@
 #include "config.hpp"
 #include "markdown.hpp"
 #include "gitcmd.hpp"
+#include "robust_str.hpp"
+#include "file_actions.hpp"
 #include "html.hpp"
 
 
@@ -22,24 +24,7 @@
 #include <vector>
 #include <iostream>
 #include <functional>
-
-namespace fs = std::filesystem;
-
-/*****************************
- *  文件操作
- *****************************/
-namespace FileAction {
-    bool createSubDir(std::string subdir, bool debug = false);
-
-    bool recursiveCreateDir(std::string recur_dir, std::string pagin_str = "/");
-
-    std::vector<fs::path> getFiles(std::string dir,
-        std::function<bool(fs::path)> checker = [](fs::path p) {
-            return true;
-        });
-    std::vector<fs::path> getFiles(std::string dir, std::string postfix);
-
-}
+#include <map>
 
 namespace action {
 
@@ -57,28 +42,34 @@ namespace action {
         fs::path tagsDir;
         fs::path archiveDir;
         fs::path categoryDir;
+        fs::path mainPageDir;
+
+        // python example:  {"tagA":[<markdownFileA>,<markdownFileB>,...]}
+        std::map<std::string, std::vector<std::unique_ptr<markdown::markdown>>> tagAndMd;
+        std::map<std::string, std::vector<std::unique_ptr<markdown::markdown>>> categloriesAndMd;
+
+        std::map<std::string, fs::path> mdToFilePath;   //md的文件名唯一，所以 文件名:Html文件路径
+
+        std::vector<std::string> cssFiles;
 
     private:
         std::vector<std::unique_ptr<markdown::markdown>> allMdFiles;
         std::vector<fs::path> srcMdPath;
 
+        std::string paginHtml(size_t min, size_t currentIndex, size_t max, std::string currentPath, std::string firstPagePath = "");
+
         //保存目录
-        std::vector<fs::path> saveArchive(
-            std::function<bool(std::unique_ptr<markdown::markdown>&, fs::path)>function = \
-            [](std::unique_ptr<markdown::markdown>& file, fs::path srcPath) {
-                return true;
-            });
+        void saveHtml();
 
-        fs::path saveCategory(std::unique_ptr<markdown::markdown>& file, fs::path srcPath);
-        fs::path saveTags(std::unique_ptr<markdown::markdown>& file, fs::path srcPath);
+        void saveArchive();
 
-        bool saveCateAndTag(std::unique_ptr<markdown::markdown>& file, fs::path srcPath);
+        void saveCategory();
+        void saveTags();
+
+
 
         //生成各种index
         void genIndexHtml();
-        // bool genArchiveIndex();
-        // bool genCategoryIndex();
-        // bool genTagsIndex();
 
     public:
         website();

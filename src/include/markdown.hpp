@@ -12,6 +12,7 @@
 #include "log.hpp"
 #include "config.hpp"
 #include "constant.hpp"
+#include "robust_str.hpp"
 #include "html.hpp"
 
 #include <cmark.h>
@@ -166,7 +167,7 @@ namespace markdown {
         void print();
         friend std::ostream& operator<<(std::ostream& os, markdown& obj);
 
-        std::string toHtml();
+        std::string toHtml(std::vector<std::string> cssfiles);
         std::string yamlToHtml();
         std::string bodyToHtml();
 

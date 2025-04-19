@@ -2,10 +2,21 @@
 #include "config.hpp"
 #include "log.hpp"
 #include "constant.hpp"
+#include "robust_str.hpp"
+
+
+#include <filesystem>
+#include <iostream>
+
+namespace fs = std::filesystem;
 
 namespace gitcmd
 {
     inline void initRepo() {
+        if (fs::exists(fs::path(Constant::defaultWebDir) / ".git")) {   //存在已经初始化的.git
+            logger::warn << "git local repositories exists, please delete it then re init";
+            return;
+        }
         std::string cmd = "git init ";
         cmd += Constant::defaultWebDir;
         logger::warn << "excute: " << cmd << "\n";
@@ -48,16 +59,22 @@ namespace gitcmd
         logger::warn << "excute: " << pullcmd << "\n";
         system(pullcmd.c_str());
 
-        pullcmd = cmd + " commit -m \"update commit\"";
-        logger::warn << "excute: " << pullcmd << "\n";
+        pullcmd = cmd + " commit -m \"update commit-";
+        auto now = std::chrono::system_clock::now();
+        auto seconds_since_epoch = std::chrono::duration_cast<std::chrono::seconds>(
+            now.time_since_epoch()
+        );
+        pullcmd += rstr::formatTimestamp(seconds_since_epoch);
+        pullcmd += "\"";
+        // logger::warn << "excute: " << pullcmd << "\n";
         system(pullcmd.c_str());
 
         pullcmd = cmd + " branch -m master main";
-        logger::warn << "excute: " << pullcmd << "\n";
+        // logger::warn << "excute: " << pullcmd << "\n";
         system(pullcmd.c_str());
 
         pullcmd = cmd + " push origin " + config::config.branch + " --force";
-        logger::warn << "excute: " << pullcmd << "\n";
+        // logger::warn << "excute: " << pullcmd << "\n";
         system(pullcmd.c_str());
     }
 } // namespace gitcmd

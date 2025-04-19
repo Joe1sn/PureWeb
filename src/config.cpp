@@ -54,22 +54,35 @@ namespace config {
     //私有: 解析配置文件
     //2025-4-1: fix: 配置文件可能造成xss
     void configPrototype::parserConfig() {
-        this->title = Html::toSafeHtmlValue(this->jsonConfig["Site"]["title"]);
-        this->subtitle = Html::toSafeHtmlValue(this->jsonConfig["Site"]["subtitle"]);
-        this->author = Html::toSafeHtmlValue(this->jsonConfig["Site"]["author"]);
-        this->webPath = Html::toSafeHtmlValue(this->jsonConfig["Site"]["path"]);
+        this->title = rstr::toSafeHtmlValue(this->jsonConfig["Site"]["title"]);
+        this->subtitle = rstr::toSafeHtmlValue(this->jsonConfig["Site"]["subtitle"]);
+        this->author = rstr::toSafeHtmlValue(this->jsonConfig["Site"]["author"]);
 
-        this->source_dir = Html::toSafeHtmlValue(this->jsonConfig["Directory"]["source_dir"]);
-        this->public_dir = Html::toSafeHtmlValue(this->jsonConfig["Directory"]["public_dir"]);
-        this->tag_dir = Html::toSafeHtmlValue(this->jsonConfig["Directory"]["tag_dir"]);
-        this->archive_dir = Html::toSafeHtmlValue(this->jsonConfig["Directory"]["archive_dir"]);
-        this->category_dir = Html::toSafeHtmlValue(this->jsonConfig["Directory"]["category_dir"]);
+        std::string tempPath = rstr::toSafeHtmlValue(this->jsonConfig["Site"]["path"]);
+        if (tempPath == "")//确定html中的web根目录表现方式唯一
+            this->webPath = "/";
+        else {
+            if (tempPath[0] != '/')
+                this->webPath = "/" + tempPath;
+            else
+                this->webPath = tempPath;
+        }
+        if (!this->webPath.ends_with("/")) {
+            this->webPath = this->webPath + "/";
+        }
+
+
+        this->source_dir = rstr::toSafeHtmlValue(this->jsonConfig["Directory"]["source_dir"]);
+        this->public_dir = rstr::toSafeHtmlValue(this->jsonConfig["Directory"]["public_dir"]);
+        this->tag_dir = rstr::toSafeHtmlValue(this->jsonConfig["Directory"]["tag_dir"]);
+        this->archive_dir = rstr::toSafeHtmlValue(this->jsonConfig["Directory"]["archive_dir"]);
+        this->category_dir = rstr::toSafeHtmlValue(this->jsonConfig["Directory"]["category_dir"]);
 
         this->per_page = this->jsonConfig["Pagination"]["per_page"];
-        this->pagination_dir = Html::toSafeHtmlValue(this->jsonConfig["Pagination"]["pagination_dir"]);
+        this->pagination_dir = rstr::toSafeHtmlValue(this->jsonConfig["Pagination"]["pagination_dir"]);
 
-        this->repo = Html::toSafeHtmlValue(this->jsonConfig["Deploy"]["repo"]);
-        this->branch = Html::toSafeHtmlValue(this->jsonConfig["Deploy"]["branch"]);
+        this->repo = rstr::toSafeHtmlValue(this->jsonConfig["Deploy"]["repo"]);
+        this->branch = rstr::toSafeHtmlValue(this->jsonConfig["Deploy"]["branch"]);
 
     }
 

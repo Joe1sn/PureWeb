@@ -29,21 +29,27 @@ set(PUREWEB_INCLUDE
     src/include/log.hpp
     src/include/constant.hpp
     src/include/config.hpp
-    src/include/actions.hpp
-    src/include/page.hpp
+    src/include/web_actions.hpp
+    src/include/file_actions.hpp
+
+    # src/include/page.hpp
     src/include/markdown.hpp
     src/include/gitcmd.hpp
     src/include/html.hpp
+    src/include/robust_str.hpp
 )
 
 set(PUREWEB_SOURCE
     src/main.cpp
     src/log.cpp
     src/config.cpp
-    src/actions.cpp
-    src/page.cpp
+    src/web_actions.cpp
+    src/file_actions.cpp
+
+    # src/page.cpp
     src/markdown.cpp
     src/html.cpp
+    src/robust_str.cpp
 )
 
 # WINDOWS 平台编译
