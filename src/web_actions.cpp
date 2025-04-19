@@ -206,7 +206,7 @@ namespace action {
             if (currentYear == lastYear) {
                 bodyContent += "<ul class=\"archive__list\"><li class=\"archive__list__item\"><span class=\"archive__list__item__text metadata\">";
                 bodyContent += file->dateStr;
-                bodyContent += "</span><a class=\"archive__list__item__link\" href=\"/" + fs::relative(this->mdToFilePath[file->path.filename().string()], Constant::defaultWebDir).generic_string() + "\">";
+                bodyContent += "</span><a class=\"archive__list__item__link\" href=\"" + config::config.webPath + fs::relative(this->mdToFilePath[file->path.filename().string()], Constant::defaultWebDir).generic_string() + "\">";
                 bodyContent += file->articleTile;
                 bodyContent += "</a></li></ul>";
             }
