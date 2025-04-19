@@ -282,7 +282,7 @@ namespace action {
             title = rstr::replaceAll(title, "(", "\\(");
             title = rstr::replaceAll(title, ")", "\\)");
 
-            mdFormat += "# [" + title + "](/" + fs::relative(this->mdToFilePath[mdFile->path.filename().string()], config::config.webRootDir).generic_string();
+            mdFormat += "# [" + title + "](" + config::config.webPath + fs::relative(this->mdToFilePath[mdFile->path.filename().string()], config::config.webRootDir).generic_string();
             mdFormat += ")\n\n";
             mdFormat += mdFile->dateStr + "\n\n";
 
