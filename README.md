@@ -73,6 +73,7 @@ PureWeb 是一个类似hexo、hugo的，简单的、微型的静态博客网站�
 - [x] git相关操作： init初始化时删除原有的 .git
 - [x] git相关操作： 网页更新相关
 - [ ] 新建文章：`Pureweb.exe new <article>`
-- [ ] tags页面
+- [x] tags页面
 - [ ] categlories页面
 - [x] 主页
+- [x] fix: 文章不足一页，导致index没有生成

@@ -45,8 +45,8 @@ namespace action {
         fs::path mainPageDir;
 
         // python example:  {"tagA":[<markdownFileA>,<markdownFileB>,...]}
-        std::map<std::string, std::vector<std::unique_ptr<markdown::markdown>>> tagAndMd;
-        std::map<std::string, std::vector<std::unique_ptr<markdown::markdown>>> categloriesAndMd;
+        std::map<std::string, std::vector<size_t>> tagAndMd;
+        std::map<std::string, std::vector<size_t>> categloriesAndMd;
 
         std::map<std::string, fs::path> mdToFilePath;   //md的文件名唯一，所以 文件名:Html文件路径
 

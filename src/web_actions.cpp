@@ -177,7 +177,6 @@ namespace action {
 
     //保存到archive目录
     void website::saveArchive() {
-
         size_t pageIndex = 0;
         size_t counter = 0;
         auto page = Html::html(config::config.title, config::config.subtitle, "", this->cssFiles);
@@ -211,7 +210,7 @@ namespace action {
                 bodyContent += "</a></li></ul>";
             }
             ++counter;
-            if (counter % config::config.per_page == 0) {
+            if (counter % config::config.per_page == 0 || counter == this->allMdFiles.size()) {
                 pageIndex = size_t(counter / config::config.per_page);
 
                 //1.创建文件夹 /website/archive/pagex
@@ -344,6 +343,83 @@ namespace action {
 
     }
 
+    //生成每个 目录
+    void website::saveCategory() {}
+
+    //生成每个 标签
+    void website::saveTags() {
+        for (size_t i = 0; i < this->allMdFiles.size(); i++)
+        {
+            auto& file = this->allMdFiles[i];
+            for (auto tag : file->tags) {
+                FileAction::createSubDir(tag);
+                this->tagAndMd[tag].push_back(i);
+            }
+        }
+
+        auto page = Html::html(config::config.title, config::config.subtitle, "", this->cssFiles);
+        const std::string sectionHeader = "<section class=\"archive\">";
+        const std::string sectionEnd = "</section>";
+
+        for (auto key : this->tagAndMd) {
+
+            std::string tagName = fs::path(key.first).stem().string();
+            size_t pageIndex = 0;
+            size_t counter = 0;
+            std::string bodyContent = "<h3 class=\"archive__title article__title\">" + tagName + "</h3>";
+            for (auto index : key.second)
+            {
+
+                auto& file = this->allMdFiles[index];
+                bodyContent += "<ul class=\"archive__list\"><li class=\"archive__list__item\"><span class=\"archive__list__item__text metadata\">";
+                bodyContent += file->dateStr;
+                bodyContent += "</span><a class=\"archive__list__item__link\" href=\"" + config::config.webPath + fs::relative(this->mdToFilePath[file->path.filename().string()], Constant::defaultWebDir).generic_string() + "\">";
+                bodyContent += file->articleTile;
+                bodyContent += "</a></li></ul>";
+                ++counter;
+                if (counter % config::config.per_page == 0 || counter == key.second.size()) {
+                    if (counter == key.second.size())
+                        pageIndex = 1;
+                    else
+                        pageIndex = size_t(counter / config::config.per_page);
+
+                    //1.创建文件夹 /website/archive/pagex
+                    fs::path pagePath = fs::path(key.first);
+                    if (pageIndex != 1) {
+                        pagePath = pagePath / ("page" + std::to_string(pageIndex));
+                        if (!FileAction::recursiveCreateDir(pagePath.string())) {
+                            logger::error << "can't create dir: " << pagePath.string() << "\n";
+                            return;
+                        }
+                    }
+                    pagePath /= "index.html";
+
+                    //2.合成翻页
+                    if (counter == key.second.size() && pageIndex == 1) {
+                        bodyContent += "";
+                    }
+                    else {
+                        bodyContent += this->paginHtml(1, pageIndex, size_t((this->allMdFiles.size()) / config::config.per_page),
+                            config::config.webPath + fs::relative(fs::path(this->tagsDir / config::config.pagination_dir), config::config.webRootDir).generic_string(), config::config.webPath + fs::relative(this->tagsDir, config::config.webRootDir).generic_string());
+                    }
+
+                    //3.在文件夹下创建index.html
+                    auto fileObj = std::ofstream(pagePath);
+                    page.bodySetter(bodyContent);
+                    std::string tempStr = page.to_string();
+                    fileObj.write(tempStr.c_str(), tempStr.length());
+                    fileObj.close();
+
+                    //5.保存
+                    bodyContent = "";
+                    page.bodySetter(bodyContent);
+                }
+            }
+        }
+
+
+    }
+
     //对所有md文件转到html
     bool website::renderMarkdowns() {
         // 0. cssFile检查和复制
@@ -366,6 +442,7 @@ namespace action {
         this->saveArchive();
         // 4. cate 生成Page
         // 5. Tag 生成Page
+        this->saveTags();
 
 
         /*

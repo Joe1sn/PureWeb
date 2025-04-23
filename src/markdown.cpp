@@ -58,6 +58,19 @@ namespace markdown {
     std::string markdown::bodyToHtml() {
         std::string result = "<div id=\"write\" class>\n";
         result += "<p><strong>" + this->dateStr + "</strong></p>\n";
+        result += "<p><strong>Tag: </strong>";
+        for (auto tag : this->tags)
+        {
+
+            std::string tagName = fs::path(tag).stem().string();
+            result += "<a href=\"" \
+                + config::config.webPath + "/" + config::config.tag_dir + "/"\
+                + tagName + "\">" + tagName + " </a>";
+
+        }
+        result += "</p>\n";
+
+
         result += cmark_markdown_to_html(this->body.c_str(), this->body.length(), CMARK_OPT_UNSAFE);
         result += "\n</div>\n";
         return result;
