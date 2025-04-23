@@ -55,8 +55,19 @@ PureWeb 是一个类似hexo、hugo的，简单的、微型的静态博客网站�
 .\PureWeb.exe fresh
 ```
 
-1. 在`website`文件夹下开启http服务器，然后访问
-2. 再次`.\PureWeb.exe init`上传到远程仓库
+刷新远程仓库和网站：
+
+```
+.\PureWeb.exe update
+```
+
+创建新的帖子，位于`/posts/<new post name>`中
+
+```
+.\PureWeb.exe new <new post name>
+```
+
+
 
 # TODO
 
@@ -74,6 +85,6 @@ PureWeb 是一个类似hexo、hugo的，简单的、微型的静态博客网站�
 - [x] git相关操作： 网页更新相关
 - [ ] 新建文章：`Pureweb.exe new <article>`
 - [x] tags页面
-- [ ] categlories页面
+- [ ] ~~categlories页面~~
 - [x] 主页
 - [x] fix: 文章不足一页，导致index没有生成

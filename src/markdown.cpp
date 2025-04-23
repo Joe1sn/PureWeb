@@ -223,7 +223,37 @@ namespace markdown {
 
     }
 
+    bool newMarkdownFile(std::string filename) {
+        fs::path fp = config::config.postDir;
+        fp = fp / (filename + ".md");
+        try
+        {
+            // ---
+            // title: test
+            // date: 2025-04-23 20:22:26
+            // tags:
+            // ---
+
+            auto fileObj = std::ofstream(fp);
+            fileObj << "---\n";
+            fileObj << "title: " << filename << "\n";
+            auto tp = std::chrono::system_clock::now();
+            auto t = std::chrono::floor<std::chrono::seconds>(tp);
+            //Using UTC+0
+            fileObj << "date: " << std::format("{:%Y-%m-%d %H:%M:%S}", t) << "\n";
+            fileObj << "tags: \n";
+            fileObj << "---\n";
 
 
+            fileObj.close();
+            return true;
+        }
+        catch (const std::exception& e)
+        {
+            logger::error << e.what() << '\n';
+            return false;
+        }
 
+
+    }
 }

@@ -81,11 +81,14 @@ namespace rstr {
     }
 
     //将std::chrono::seconds解析为 Year/Mouth/Day
-    std::string formatTimestamp(const std::chrono::seconds tp)
+    std::string formatTimestamp(const std::chrono::seconds tp, std::string fmt)
     {
         auto t = std::chrono::system_clock::time_point(tp);
         // 转换为 year/month/day 格式
-        return std::format("{:%Y/%m/%d}", t);
+        if (fmt == "")
+            return std::format("{:%Y/%m/%d}", t);
+        else
+            return std::format("{:%Y-%m-%d %H:%M:%S}", t);//stupid c++
     }
 
     //替换所有字符串

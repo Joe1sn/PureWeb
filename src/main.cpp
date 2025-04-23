@@ -26,7 +26,8 @@ int main(int argc, char* argv[]) {
 
     std::string temp = "";
     auto website = action::website();
-
+    bool intoSubArg = false;
+    std::string lastArg = "";
     for (size_t i = 1; i < argc; i++)
     {
         temp = argv[i];
@@ -36,6 +37,19 @@ int main(int argc, char* argv[]) {
             website.renderMarkdowns();
         else if (temp == "update")
             gitcmd::updateRepo();
+        else if (temp == "new") {
+            lastArg = temp;
+            intoSubArg = true;
+        }
+        else if (intoSubArg) {
+            intoSubArg = false;
+            if (lastArg == "new") {
+                if (markdown::newMarkdownFile(temp))
+                    logger::success << "created: " << temp << "\n";
+                else
+                    logger::error << "created: " << temp << "Failed\n";
+            }
+        }
     }
     return 0;
 }
